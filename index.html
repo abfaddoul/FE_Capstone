@@ -3,8 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐱 CatQuest</title>
+    <title>🐱 CatQuest Pro</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #2c3e50;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f5f5f5;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #2c3e50;
+            --border-color: rgba(233, 236, 239, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4dabf7;
+            --secondary-color: #1a1a1a;
+            --accent-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --bg-color: #121212;
+            --card-bg: rgba(30, 30, 30, 0.95);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,13 +33,19 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background-color: #f5f5f5;
+            background: var(--accent-gradient);
+            min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         .navbar {
-            background-color: #2c3e50;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
             padding: 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .container {
@@ -28,17 +54,81 @@
             padding: 0 20px;
         }
 
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .navbar-brand h1 {
             color: white;
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navbar-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .favorites-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .favorites-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .favorites-count {
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
             font-weight: bold;
         }
 
         .search-section {
-            background-color: white;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 2rem 0;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
         }
 
         .search-container {
@@ -51,72 +141,153 @@
         .search-input-group {
             display: flex;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 30px;
+            overflow: hidden;
         }
 
         .search-input {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-right: none;
-            border-radius: 25px 0 0 25px;
+            padding: 15px 20px;
+            border: none;
             font-size: 16px;
             outline: none;
+            background: white;
+            color: var(--text-color);
         }
 
         .search-btn {
-            padding: 12px 20px;
-            background-color: #007bff;
+            padding: 15px 25px;
+            background: linear-gradient(45deg, var(--primary-color), #0056b3);
             color: white;
             border: none;
-            border-radius: 0 25px 25px 0;
             cursor: pointer;
             font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+            transform: translateY(-2px);
         }
 
         .filter-group {
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .category-select {
-            padding: 8px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
             font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .category-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .stats-bar {
+            background: var(--card-bg);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            margin: 0 20px 2rem 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stats-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
         }
 
         .cats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             margin: 20px 0;
             padding: 20px;
         }
 
         .cat-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
         }
 
         .cat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .favorite-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .favorite-icon:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-icon.favorited {
+            background: #e74c3c;
+            color: white;
         }
 
         .card-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             overflow: hidden;
+            position: relative;
         }
 
         .card-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .cat-card:hover .card-image img {
+            transform: scale(1.1);
         }
 
         .card-content {
@@ -124,23 +295,58 @@
         }
 
         .cat-name {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
 
         .cat-origin {
-            color: #7f8c8d;
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cat-origin::before {
+            content: "🌍";
         }
 
         .cat-temperament {
-            color: #34495e;
+            color: var(--text-color);
+            opacity: 0.8;
             font-size: 0.9rem;
             margin-bottom: 1rem;
             font-style: italic;
+            background: rgba(248, 249, 250, 0.3);
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+
+        .cat-description {
+            color: var(--text-color);
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .cat-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            background: rgba(248, 249, 250, 0.3);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
         }
 
         .loading {
@@ -150,13 +356,14 @@
             justify-content: center;
             height: 50vh;
             font-size: 18px;
+            color: white;
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #007bff;
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,255,255,0.3);
+            border-top: 6px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
@@ -168,18 +375,148 @@
         }
 
         .footer {
-            background-color: #2c3e50;
+            background: rgba(44, 62, 80, 0.95);
             color: white;
             padding: 2rem 0;
-            margin-top: 2rem;
+            margin-top: 3rem;
             text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .favorites-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .favorites-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .favorites-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .favorite-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .favorite-info h4 {
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .favorite-info p {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .remove-favorite {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         @media (max-width: 768px) {
             .cats-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
                 padding: 15px;
+            }
+            
+            .navbar-brand h1 {
+                font-size: 1.5rem;
+            }
+            
+            .search-input-group {
+                max-width: 100%;
+            }
+
+            .navbar-controls {
+                gap: 0.5rem;
+            }
+
+            .favorites-btn {
+                padding: 6px 12px;
+                font-size: 12px;
             }
         }
     </style>
@@ -188,7 +525,14 @@
     <nav class="navbar">
         <div class="container">
             <div class="navbar-brand">
-                <h1>🐱 CatQuest</h1>
+                <h1>🐱 CatQuest Pro</h1>
+            </div>
+            <div class="navbar-controls">
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <button class="favorites-btn" id="favoritesBtn">
+                    ❤️ Favorites
+                    <span class="favorites-count" id="favoritesCount">0</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -198,7 +542,7 @@
             <div class="search-container">
                 <div class="search-input-group">
                     <input type="text" placeholder="Search cats by name or description..." class="search-input" id="searchInput">
-                    <button class="search-btn">🔍</button>
+                    <button class="search-btn">🔍 Search</button>
                 </div>
                 <div class="filter-group">
                     <label for="category-filter">Filter by:</label>
@@ -208,8 +552,32 @@
                         <option value="playful">Playful</option>
                         <option value="calm">Calm</option>
                         <option value="intelligent">Intelligent</option>
+                        <option value="independent">Independent</option>
+                        <option value="affectionate">Affectionate</option>
+                        <option value="active">Active</option>
                     </select>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat-item">
+                <div class="stat-number" id="totalCats">0</div>
+                <div>Total Cats</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="filteredCats">0</div>
+                <div>Showing</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="currentPage">1</div>
+                <div>Page</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="favoritesTotal">0</div>
+                <div>Favorites</div>
             </div>
         </div>
     </div>
@@ -217,21 +585,138 @@
     <div class="container">
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>Loading cats...</p>
+            <p>Loading amazing cats...</p>
         </div>
         
         <div id="catsGrid" class="cats-grid" style="display: none;"></div>
+        
+        <div id="pagination" class="pagination" style="display: none;"></div>
+    </div>
+
+    <div id="favoritesModal" class="favorites-modal">
+        <div class="favorites-content">
+            <div class="modal-header">
+                <h2>❤️ Favorite Cats</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div id="favoritesList" class="favorites-list">
+                <!-- Favorites will be populated here -->
+            </div>
+        </div>
     </div>
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 CatQuest. Built with ❤️</p>
+            <p>&copy; 2024 CatQuest Pro - Advanced Cat Discovery Platform 🚀</p>
         </div>
     </footer>
 
     <script>
         let allCats = [];
         let filteredCats = [];
+        let currentPage = 1;
+        let favorites = JSON.parse(localStorage.getItem('catquest-favorites') || '[]');
+        const catsPerPage = 12;
+
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('catquest-theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon();
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('catquest-theme', newTheme);
+            updateThemeIcon();
+        });
+
+        function updateThemeIcon() {
+            const theme = body.getAttribute('data-theme');
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Favorites management
+        function toggleFavorite(catId) {
+            const index = favorites.findIndex(fav => fav.id === catId);
+            if (index === -1) {
+                const cat = allCats.find(c => c.id === catId);
+                if (cat) {
+                    favorites.push(cat);
+                }
+            } else {
+                favorites.splice(index, 1);
+            }
+            localStorage.setItem('catquest-favorites', JSON.stringify(favorites));
+            updateFavoritesCount();
+            updateFavoritesTotal();
+        }
+
+        function updateFavoritesCount() {
+            document.getElementById('favoritesCount').textContent = favorites.length;
+        }
+
+        function updateFavoritesTotal() {
+            document.getElementById('favoritesTotal').textContent = favorites.length;
+        }
+
+        function isFavorite(catId) {
+            return favorites.some(fav => fav.id === catId);
+        }
+
+        // Modal management
+        const favoritesBtn = document.getElementById('favoritesBtn');
+        const favoritesModal = document.getElementById('favoritesModal');
+        const closeModal = document.getElementById('closeModal');
+
+        favoritesBtn.addEventListener('click', () => {
+            favoritesModal.style.display = 'block';
+            displayFavorites();
+        });
+
+        closeModal.addEventListener('click', () => {
+            favoritesModal.style.display = 'none';
+        });
+
+        favoritesModal.addEventListener('click', (e) => {
+            if (e.target === favoritesModal) {
+                favoritesModal.style.display = 'none';
+            }
+        });
+
+        function displayFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = '<p style="text-align: center; color: var(--text-color);">No favorite cats yet! Start adding some by clicking the ❤️ button on cat cards.</p>';
+                return;
+            }
+
+            favoritesList.innerHTML = favorites.map(cat => `
+                <div class="favorite-item">
+                    <img src="${cat.image?.url || 'https://via.placeholder.com/60x60/cccccc/666666?text=No+Image'}" 
+                         alt="${cat.name}"
+                         onerror="this.src='https://via.placeholder.com/60x60/cccccc/666666?text=No+Image'">
+                    <div class="favorite-info">
+                        <h4>${cat.name}</h4>
+                        <p>${cat.origin || 'Unknown origin'}</p>
+                    </div>
+                    <button class="remove-favorite" onclick="removeFavorite('${cat.id}')">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function removeFavorite(catId) {
+            favorites = favorites.filter(fav => fav.id !== catId);
+            localStorage.setItem('catquest-favorites', JSON.stringify(favorites));
+            updateFavoritesCount();
+            updateFavoritesTotal();
+            displayFavorites();
+            displayCats(); // Refresh main display to update favorite icons
+        }
 
         async function fetchCats() {
             try {
@@ -241,34 +726,95 @@
                 }
                 allCats = await response.json();
                 filteredCats = [...allCats];
+                updateStats();
                 displayCats();
+                displayPagination();
+                updateFavoritesCount();
+                updateFavoritesTotal();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('catsGrid').style.display = 'grid';
+                document.getElementById('pagination').style.display = 'flex';
             } catch (err) {
                 document.getElementById('loading').innerHTML = `
                     <h2>Error: ${err.message}</h2>
-                    <button onclick="fetchCats()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+                    <button onclick="fetchCats()" style="padding: 15px 30px; background: linear-gradient(45deg, #007bff, #0056b3); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px;">Try Again</button>
                 `;
             }
         }
 
+        function updateStats() {
+            document.getElementById('totalCats').textContent = allCats.length;
+            document.getElementById('filteredCats').textContent = filteredCats.length;
+            document.getElementById('currentPage').textContent = currentPage;
+        }
+
         function displayCats() {
+            const startIndex = (currentPage - 1) * catsPerPage;
+            const endIndex = startIndex + catsPerPage;
+            const catsToShow = filteredCats.slice(startIndex, endIndex);
+            
             const grid = document.getElementById('catsGrid');
-            grid.innerHTML = filteredCats.map(cat => `
+            grid.innerHTML = catsToShow.map(cat => `
                 <div class="cat-card">
+                    <button class="favorite-icon ${isFavorite(cat.id) ? 'favorited' : ''}" 
+                            onclick="toggleFavorite('${cat.id}')" 
+                            title="${isFavorite(cat.id) ? 'Remove from favorites' : 'Add to favorites'}">
+                        ${isFavorite(cat.id) ? '❤️' : '🤍'}
+                    </button>
                     <div class="card-image">
-                        <img src="${cat.image?.url || 'https://via.placeholder.com/300x200/cccccc/666666?text=No+Image'}" 
+                        <img src="${cat.image?.url || 'https://via.placeholder.com/320x220/cccccc/666666?text=No+Image'}" 
                              alt="${cat.name}"
-                             onerror="this.src='https://via.placeholder.com/300x200/cccccc/666666?text=No+Image'">
+                             onerror="this.src='https://via.placeholder.com/320x220/cccccc/666666?text=No+Image'">
                     </div>
                     <div class="card-content">
                         <h3 class="cat-name">${cat.name}</h3>
-                        <p class="cat-origin">Origin: ${cat.origin || 'Unknown'}</p>
+                        <p class="cat-origin">${cat.origin || 'Unknown'}</p>
                         <p class="cat-temperament">${cat.temperament ? cat.temperament.split(',').slice(0, 3).join(', ') + (cat.temperament.split(',').length > 3 ? '...' : '') : 'Temperament not specified'}</p>
-                        <p style="color: #555; line-height: 1.5; margin-bottom: 1rem;">${cat.description ? (cat.description.length > 100 ? cat.description.substring(0, 100) + '...' : cat.description) : 'No description available'}</p>
+                        <p class="cat-description">${cat.description ? (cat.description.length > 120 ? cat.description.substring(0, 120) + '...' : cat.description) : 'No description available'}</p>
+                        <div class="cat-stats">
+                            <div class="stat">Life: ${cat.life_span ? cat.life_span + 'y' : 'N/A'}</div>
+                            <div class="stat">Weight: ${cat.weight?.metric ? cat.weight.metric + 'kg' : 'N/A'}</div>
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function displayPagination() {
+            const totalPages = Math.ceil(filteredCats.length / catsPerPage);
+            if (totalPages <= 1) {
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            const pagination = document.getElementById('pagination');
+            let paginationHTML = '';
+
+            if (currentPage > 1) {
+                paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage - 1})">← Previous</button>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    paginationHTML += `<span style="padding: 10px; color: #666;">...</span>`;
+                }
+            }
+
+            if (currentPage < totalPages) {
+                paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Next →</button>`;
+            }
+
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            displayCats();
+            displayPagination();
+            updateStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function filterCats() {
@@ -287,12 +833,16 @@
                 return matchesSearch && matchesCategory;
             });
             
+            currentPage = 1;
+            updateStats();
             displayCats();
+            displayPagination();
         }
 
         document.getElementById('searchInput').addEventListener('input', filterCats);
         document.getElementById('category-filter').addEventListener('change', filterCats);
 
+        // Initialize
         fetchCats();
     </script>
 </body>
